@@ -50,7 +50,7 @@ If you have access to the [GitHub actions beta](https://github.com/features/acti
       on = "push"
       resolves = "Publish"
     }
-    
+
     action "Build" {
       uses = "framer/bridge@master"
       args = ["build", <your-project-path.framerfx>]
@@ -75,9 +75,9 @@ If you have access to the [GitHub actions beta](https://github.com/features/acti
 
 ## 🚚 Using CI
 
-As an example of integrating `framer-cli` with an external CI service, there is a small [CircleCI configuration](https://circleci.com/docs/2.0/configuration-reference) included in this repository that publishes the given package to the [Framer store](https://store.framer.com) every time a commit is made to the `master` branch.
+As an example of integrating `framer-cli` with an external CI service, there is a small [CircleCI configuration](https://circleci.com/docs/2.0/configuration-reference) and [Travis CI configuration](https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci) included in this repository that publishes the given package to the [Framer store](https://store.framer.com) every time a commit is made to the `master` branch.
 
-To integrate with CircleCI:
+**To integrate with CircleCI:**
 
 1. [Connect your repository with CircleCI](https://circleci.com/integrations/github/).
 1. Add the `FRAMER_TOKEN` environment variable in the [CI project settings](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project).
@@ -110,6 +110,34 @@ To integrate with CircleCI:
              filters:
                branches:
                  only: master
+   ```
+
+1. Publish a brand new version of your package to the [Framer store](https://store.framer.com) by pushing a commit on the `master` branch.
+
+**To integrate with Travis CI:**
+
+1. [Connect your repository with Travis CI](https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci).
+1. Add the `FRAMER_TOKEN` environment variable in the [CI project settings](https://docs.travis-ci.com/user/environment-variables).
+1. Update the [`.travis.yml`](./.travis.yml) with your project path, e.g.:
+
+   ```yml
+    language: node_js
+    node_js:
+      - 10.15.3
+
+    jobs:
+      include:
+        - stage: build
+          name: "Build"
+          if: branch = master
+          script: yarn
+          script: npx framer-cli build <your-project-path.framerfx>
+
+        - stage: publish
+          name: "Publish"
+          if: branch = master
+          script: yarn
+          script: npx framer-cli publish <your-project-path.framerfx> --yes
    ```
 
 1. Publish a brand new version of your package to the [Framer store](https://store.framer.com) by pushing a commit on the `master` branch.
