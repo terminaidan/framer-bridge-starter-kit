@@ -43,34 +43,35 @@ If you want to import your own design system, you can replace both files with yo
 
 If you have access to the [GitHub actions beta](https://github.com/features/actions), you can use this repository to automate the deployment of your Framer package to the store without needing any external services.
 
-1. Modify the `args` property in the `Build` and `Publish` actions inside [`.github/main.workflow`](/.github/main.workflow) with the path of your Framer package, eg:
+1. Modify the `args` property in the `Build` and `Publish` actions inside [`.github/workflows/publish.yml`](/.github/workflows/publish.yml) with the path of your Framer package, eg:
 
-   ```sh
-    workflow "Build and Publish" {
-      on = "push"
-      resolves = "Publish"
-    }
+   ```yaml
+   on: push
+   name: Build and publish
+   jobs:
+     publish:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@master
 
-    action "Build" {
-      uses = "framer/bridge@master"
-      args = ["build", <your-project-path.framerfx>]
-    }
+         - name: Branch filter
+           uses: actions/bin/filter@master
+           with:
+             args: branch master
 
-    action "Publish Filter" {
-      needs = ["Build"]
-      uses = "actions/bin/filter@master"
-      args = "branch master"
-    }
+         - name: Build
+           uses: framer/bridge@master
+           with:
+             args: build design-system.framerfx
 
-    action "Publish" {
-      uses = "framer/bridge@master"
-      args = ["publish", <your-project-path.framerfx>, "--yes"]
-      needs = ["Build", "Publish Filter"]
-      secrets = ["FRAMER_TOKEN"]
-    }
+         - name: Publish
+           uses: framer/bridge@master
+           env:
+             FRAMER_TOKEN: ${{ secrets.FRAMER_TOKEN }}
+           with:
+             args: publish design-system.framerfx --yes
    ```
-
-1. In GitHub, navigate to the forked repository and set the `FRAMER_TOKEN` via the GitHub UI for the [`.github/main.workflow`](/.github/main.workflow) publish step (accessible by navigating the file structure on the homepage of the repository).
+1. In GitHub, navigate to the forked repository, and under your repository name, click *Settings*. Then, click *Secrets* in the left sidebar, and add the `FRAMER_TOKEN` secret.
 1. Push a commit to the `master` branch and watch as the GitHub actions pick up the commit, build the package, publish it to the [Framer Store](https://store.framer.com).
 
 ## 🚚 Using CI
