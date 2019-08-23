@@ -131,14 +131,16 @@ As an example of integrating `framer-cli` with an external CI service, there is 
         - stage: build
           name: "Build"
           if: branch = master
-          script: yarn
-          script: npx framer-cli build <your-project-path.framerfx>
+          script:
+            - yarn
+            - npx framer-cli build <your-project-path.framerfx>
 
         - stage: publish
           name: "Publish"
           if: branch = master
-          script: yarn
-          script: npx framer-cli publish <your-project-path.framerfx> --yes
+          script:
+            - yarn
+            - npx framer-cli publish <your-project-path.framerfx> --yes
    ```
 
 1. Publish a brand new version of your package to the [Framer store](https://store.framer.com) by pushing a commit on the `master` branch.
