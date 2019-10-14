@@ -76,7 +76,7 @@ const StyledInput = styled.input`
       inset 0px 0px 0px 1px ${theme.color.danger};
   }
   &.error:focus {
-    box-shadow: inset 0px 1px 2px 0px rgba(0, 0, 0, 0.05),
+    box-shadow: inset 0px 1px 6px 0px rgba(0, 0, 0, 0.05),
       inset 0px 0px 0px 1px ${theme.color.danger},
       0px 0px 0px 2px ${theme.color.dangerLight};
   }
